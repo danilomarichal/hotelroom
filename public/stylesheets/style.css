@@ -1,0 +1,30 @@
+#one{
+margin: 0;
+padding: 0;
+background-color: grey;
+}
+#container{
+font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+color: #00B7FF;
+text-align: center;
+height: 500px;
+width: 100%;
+background-position: center;
+background-size: 100%;
+background-repeat: no-repeat;
+}
+.slide{
+display: none;
+height: 500px;
+width: 100%;
+background-position: center;
+background-size: 100%;
+background-repeat: no-repeat;
+animation: fading 5s infinite;
+}
+
+@keyframes fading{
+  100%{opacity: 1;}
+  0%{opacity: 0;}
+}
+
