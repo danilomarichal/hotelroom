@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 var mongodb = require('mongodb');
 var mongoose = require('mongoose');
 
-mongoose.connect('localhost:27017/hotelroom')
+mongoose.connect('localhost:27017/hotelroom');
 var Schema = mongoose.Schema;
 
 var otherSchema = new Schema({
@@ -51,6 +51,33 @@ app.get('/signup', function(req, res){
 res.render('signup');
 });
 
+
+app.get('/user', function(req, res){
+User.find()
+.then(function(data){
+  var all_updated = {
+      items: data
+    };
+  res.render('update',all_updated);
+})
+});
+
+//INSERTS DATA (users) IN MONGODB
+app.post('/signup', function(req,res){
+var item = {
+  firstname: req.body.name,
+  lastname: req.body.last,
+  age: req.body.age,
+  email: req.body.email,
+  password: req.body.password,
+};
+var person = new User(item);
+person.save();
+res.send("user created!");
+});
+
+
+//GETS DATA FROM MONGODB
 app.get('/get-data', function(req, res, next){
 User.find()
 .then(function(data){
@@ -62,44 +89,42 @@ User.find()
 });
 
 
-app.post('/signup', function(req,res,next){
-var item ={
-  firstname: req.body.name,
-  lastname: req.body.last,
-  age: req.body.age,
-  email: req.body.email,
-  password: req.body.password,
-};
-var person = new User(item);
-person.save();
-res.redirect("user",person);
+//SHOWS SPECIFIC DATA FROM DB TABLE
+app.get('/user/:id', function(req, res){
+var id = req.params.id;
+User.findById(id)
+.then(data => {
+    var one = {
+      id:req.params.id,
+      name: data.firstname,
+      lastname: data.lastname,
+      age: data.age,
+      email:data.email,
+      password:data.password
+  };
+res.render('show', one);
+ });
 });
 
 
-/*
-app.post('/update', function(req,res,next){
 
-var id = req.body.id;
-
-User.findById(id, function(err, doc){
-  if(err){
-    console.error("no entry")
-  }
-doc.firstName=req.body.name;
-doc.lastName=req.body.last;
-doc.age=req.body.age;
-doc.email=req.body.email;
-doc.password=req.body.password;
-doc.save();
- })
+app.put('/user/:id', function(req,res){
+var id = req.params.id;
+User.update(id, function(data){
+data.email = req.body.email;
+data.password = req.body.password;
+data.save()
+res.send('updated!')
+})
 });
-*/
 
-app.post('/delete', function(req, res, next){
-  var id = req.body.id;
-  UserDataSchema.findByIdAndRemove(id).exec();
+
+app.delete('/user/:id', function(req, res){
+  var id = req.params.id;
+  User.findOneAndRemove(id, function(err) {
+  if (err) throw err;
 res.send("deleted")
 });
-
+})
 
 module.exports = app;

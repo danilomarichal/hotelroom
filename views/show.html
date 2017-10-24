@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+{{id}}<br>
+Full Name: {{name}}&nbsp;{{lastname}}<br>
+Age: {{age}}<br>
+E-mail: {{email}}<br>
+Password: {{password}}<br>
+<br>
+<br>
+<br>
+<br>
+<form action="/get-data" method="post">
+Update your E-mail<br>
+<input type="text" placeholder="New e-mail" name="mail"><br><br>
+Update your Password<br>
+<input type="text" placeholder="New password" name="pass"><br><br>
+<button type="submit">Update</button>
+</form>
+<br>
+<br>
+<br>
+<br>
+<form action = "/user/{{id}}" method="post">
+<button  type="submit">Delete my profile... See ya!!</button>
+</form>
+
+</body>
+</html>
+
