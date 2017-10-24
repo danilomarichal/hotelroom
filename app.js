@@ -21,14 +21,85 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+var mongodb = require('mongodb');
+var mongoose = require('mongoose');
+
+mongoose.connect('localhost:27017/hotelroom')
+var Schema = mongoose.Schema;
+
+var otherSchema = new Schema({
+ firstname:String,
+ lastname:String,
+ age:Number,
+ email:String,
+ password:String
+},{collection:'hotelroom'});
+
+var User = mongoose.model("User", otherSchema);
+
+
+
 app.get('/', function(req, res){
   res.render('index');
 });
-
 app.get('/error', function(req, res){
   res.render('error');
 });
 
+app.get('/signup', function(req, res){
+res.render('signup');
+});
+
+app.get('/get-data', function(req, res, next){
+User.find()
+.then(function(data){
+  var all = {
+      items: data
+    };
+  res.render('users',all);
+})
+});
+
+
+app.post('/signup', function(req,res,next){
+var item ={
+  firstname: req.body.name,
+  lastname: req.body.last,
+  age: req.body.age,
+  email: req.body.email,
+  password: req.body.password,
+};
+var person = new User(item);
+person.save();
+res.redirect("user",person);
+});
+
+
+/*
+app.post('/update', function(req,res,next){
+
+var id = req.body.id;
+
+User.findById(id, function(err, doc){
+  if(err){
+    console.error("no entry")
+  }
+doc.firstName=req.body.name;
+doc.lastName=req.body.last;
+doc.age=req.body.age;
+doc.email=req.body.email;
+doc.password=req.body.password;
+doc.save();
+ })
+});
+*/
+
+app.post('/delete', function(req, res, next){
+  var id = req.body.id;
+  UserDataSchema.findByIdAndRemove(id).exec();
+res.send("deleted")
+});
 
 
 module.exports = app;
