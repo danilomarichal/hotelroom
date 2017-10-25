@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "bcrypt": "^1.0.3",
     "body-parser": "~1.18.2",
     "consolidate": "^0.14.5",
     "cookie-parser": "~1.4.3",
@@ -14,6 +15,7 @@
     "express-session": "^1.15.6",
     "mongodb": "^2.2.33",
     "mongoose": "^4.12.1",
+    "mongoose-session": "0.0.4",
     "morgan": "~1.9.0",
     "mustache": "^2.3.0",
     "mustache-express": "^1.2.5",

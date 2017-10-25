@@ -22,6 +22,16 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+/*
+app.use(session({
+  secret: 'HABITACION',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}));
+*/
+
+
 var mongodb = require('mongodb');
 var mongoose = require('mongoose');
 
@@ -38,8 +48,7 @@ var otherSchema = new Schema({
 
 var User = mongoose.model("User", otherSchema);
 
-
-
+//I LIKE MY ROUTES HERE :)
 app.get('/', function(req, res){
   res.render('index');
 });
@@ -51,16 +60,9 @@ app.get('/signup', function(req, res){
 res.render('signup');
 });
 
-
-app.get('/user', function(req, res){
-User.find()
-.then(function(data){
-  var all_updated = {
-      items: data
-    };
-  res.render('update',all_updated);
+app.get('/login', function(req, res){
+  res.render('login')
 })
-});
 
 //INSERTS DATA (users) IN MONGODB
 app.post('/signup', function(req,res){
@@ -73,7 +75,24 @@ var item = {
 };
 var person = new User(item);
 person.save();
-res.send("user created!");
+res.redirect("/login");
+});
+
+
+//COMPARES AND GETS USER'S INFO FROM DB AND SENDS IT TO USERS PAGE
+app.post('/login', function(req, res){
+let email = req.body.email;
+var pass = req.body.password;
+User.findOne({email:email, password:pass})
+.then(info =>{
+  var logged={
+      _id:info.id,
+      name: info.firstname,
+      lastname: info.lastname,
+      age: info.age,
+  }
+res.render('user/index',logged)
+});
 });
 
 
@@ -87,7 +106,6 @@ User.find()
   res.render('users',all);
 })
 });
-
 
 //SHOWS SPECIFIC DATA FROM DB TABLE
 app.get('/user/:id', function(req, res){
@@ -107,7 +125,7 @@ res.render('show', one);
 });
 
 
-
+/*
 app.put('/user/:id', function(req,res){
 var id = req.params.id;
 User.update(id, function(data){
@@ -126,5 +144,5 @@ app.delete('/user/:id', function(req, res){
 res.send("deleted")
 });
 })
-
+*/
 module.exports = app;
